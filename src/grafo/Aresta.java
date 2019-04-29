@@ -5,11 +5,19 @@ public class Aresta {
 	private Vertice noTerminal1;
 	private Vertice noTerminal2;
 	private int peso;
+	private int direcao;
 	
 	public Aresta(Vertice noTerminal1, Vertice noTerminal2, int peso) {
 		this.noTerminal1 = noTerminal1;
 		this.noTerminal2 = noTerminal2;
 		this.peso = peso;
+	}
+	
+	public Aresta(Vertice noTerminal1, Vertice noTerminal2, int peso, int direcao) {
+		this.noTerminal1 = noTerminal1;
+		this.noTerminal2 = noTerminal2;
+		this.peso = peso;
+		this.direcao = direcao;
 	}
 
 	public Vertice getNoTerminal1() {
@@ -36,6 +44,13 @@ public class Aresta {
 		this.peso = peso;
 	}
 	
+	public int getDirecao() {
+		return direcao;
+	}
+
+	public void setDirecao(int direcao) {
+		this.direcao = direcao;
+	}
 	
 	
 }
