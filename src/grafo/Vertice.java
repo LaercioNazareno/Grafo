@@ -40,6 +40,11 @@ public class Vertice {
 		return arestas.size() == 0;
 	}
 	
+	public boolean isPendente() {
+		return arestas.size() == 1;
+		
+	}
+	
 	public int getGrau() {
 		return arestas.size();
 	}

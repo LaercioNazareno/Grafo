@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Random;
 
 import grafo.Aresta;
 import grafo.Grafo;
@@ -24,13 +25,17 @@ public class Leitor {
 			BufferedReader leitor = new BufferedReader(file);	
 		    
 			String linha = leitor.readLine();
-		    linha = leitor.readLine();
 		    
+		    int qtdVertices = Integer.parseInt(linha);
 			while(linha != null) {
-				construirGrafo(linha, grafo);
 				linha = leitor.readLine();
+				if(linha != null) {
+					construirGrafo(linha, grafo);
+				}
 			}
-						
+			
+			conferir(grafo.getVertices().size(), qtdVertices, grafo);
+			
 			leitor.close();
 		    file.close();
 		    
@@ -40,6 +45,22 @@ public class Leitor {
 			e.printStackTrace();
 		}
 		return grafo;
+	}
+	
+	private static void conferir(int tamGrafo, int qtdVertices, Grafo grafo) {
+		if(tamGrafo != qtdVertices) {
+			
+			int qtdFalta = qtdVertices-tamGrafo;
+			Random random = new Random(); 					
+			for(int i =0;i < qtdFalta; i++) {
+				StringBuffer sb = new StringBuffer();
+				int charInt = random.nextInt(9)+64;
+				char c = (char) charInt;
+				grafo.getVertices().add(new Vertice(sb.append(c).toString()));
+			}
+		}
+		
+		
 	}
 	
 	private static void construirGrafo(String caract,Grafo grafo) {
@@ -96,7 +117,7 @@ public class Leitor {
 			File file = new File("grafo.txt");
 			OutputStream  output = new FileOutputStream(file);
 						
-			output.write("3\n1;2;4\n1;3;7\n2;3;10".getBytes());
+			output.write("3".getBytes());
 			output.flush();
 			
 			output.close();

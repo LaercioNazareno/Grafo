@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Random;
+
 import org.junit.jupiter.api.Test;
 
 import arquivo.Leitor;
@@ -13,8 +15,8 @@ class VerticeTest {
 	public void getGrau() {
 		Leitor.escrever();
 		Grafo grafo = Leitor.ler();
-		assertTrue(grafo.isConexo());
-		assertEquals(2, grafo.getVertices().get(0).getGrau());
+		grafo.showGrafo();
+		assertTrue(grafo.isNulo());
 	}
 	
 }

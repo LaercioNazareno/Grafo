@@ -7,27 +7,6 @@ public class Grafo {
 	
 	private List<Vertice> vertices = new ArrayList<>();
 	
-	public void showGrafo() {
-		for(Vertice vertice: vertices) {
-			System.out.println("vertice "+ vertice.getNome()+"\n\tarestas:");
-			vertice.showArestas();
-		}
-	}
-	
-	public void listVertice() {
-		for(Vertice vertice: vertices) {
-			System.out.println(vertice.getNome());
-		}
-	}
-
-	public List<Vertice> getVertices() {
-		return vertices;
-	}
-
-	public void setVertices(List<Vertice> vertices) {
-		this.vertices = vertices;
-	}
-	
 	public boolean isAdjacente(Vertice vertice1, Vertice vertice2) {
 		if(vertices.contains(vertice1)&& vertices.contains(vertice2)) {
 			return vertice1.isAdjacente(vertice2);
@@ -43,11 +22,29 @@ public class Grafo {
 		return grau;
 	}
 	
-	public boolean isEuleriano() {
-		
-		boolean isEuleriano = true;
-		for() {
-			
+	public int getGrau(Vertice vertice) {
+		return vertice.getGrau();
+	}
+
+	public boolean isIsolado(Vertice vertice) {
+		return vertice.isIsolado();
+	}
+	
+	public boolean isRegular() {
+		int grau = vertices.get(0).getGrau();
+		for(Vertice vertice: vertices) {
+			if(grau != vertice.getGrau()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean isNulo() {
+		for(Vertice vertice: vertices ) {
+			if(vertice.getGrau() > 0) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -79,15 +76,67 @@ public class Grafo {
 		return true;
 	}
 	
-	public boolean isNulo() {
-		for(Vertice vertice: vertices ) {
-			if(vertice.getGrau() > 0) {
+	public boolean isEuleriano() {
+		for(Vertice vertice: vertices) {
+			if(vertice.getGrau() != 2) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
+	public boolean isUnicursal() {
+		int qtdImpar = 0;
+		
+		for(Vertice vertice: vertices) {
+			if(vertice.getGrau()%2!=0) {
+				qtdImpar++;
+			}
+		}
+		
+		return qtdImpar == 2;
+	}
+	
+	public Grafo getComplementar() {
+		
+		Grafo grafoComplementar = new Grafo();
+		for(Vertice vertice: vertices) {
+			for(Vertice verticeAdj: vertices) {
+				if((vertice.isAdjacente(verticeAdj))) {
+					if(!(grafoComplementar.vertices.contains(vertice))) {
+						grafoComplementar.vertices.add(vertice);
+					}
+					if(!(grafoComplementar.vertices.contains(verticeAdj))) {
+						grafoComplementar.vertices.add(verticeAdj);
+					}
+				}
+			}
+		}
+		
+		return grafoComplementar;
+	}
+
+ 	public void showGrafo() {
+		for(Vertice vertice: vertices) {
+			System.out.println("vertice "+ vertice.getNome()+"\n\tarestas:");
+			vertice.showArestas();
+		}
+	}
+	
+	public void listVertice() {
+		for(Vertice vertice: vertices) {
+			System.out.println(vertice.getNome());
+		}
+	}
+
+	public List<Vertice> getVertices() {
+		return vertices;
+	}
+
+	public void setVertices(List<Vertice> vertices) {
+		this.vertices = vertices;
+	}
+		
 }
 
 
