@@ -36,4 +36,12 @@ public class Vertice {
 		return false;
 	}
 	
+	public boolean isIsolado() {
+		return arestas.size() == 0;
+	}
+	
+	public int getGrau() {
+		return arestas.size();
+	}
+	
 }

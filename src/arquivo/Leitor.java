@@ -25,6 +25,7 @@ public class Leitor {
 		    
 			String linha = leitor.readLine();
 		    linha = leitor.readLine();
+		    
 			while(linha != null) {
 				construirGrafo(linha, grafo);
 				linha = leitor.readLine();
