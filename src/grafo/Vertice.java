@@ -27,6 +27,29 @@ public class Vertice {
 		this.nome = nome;
 	}
 	
+	public List<Aresta> getArestas() {
+		return arestas;
+	}
+
+	public int getGrauEntrada (){
+			int counter = 0;
+			for(Aresta aresta : arestas) {
+				if(aresta.getDirecao() == 1) 
+					counter++;
+			}
+			return counter;
+		}
+	
+
+	public int getGrauSaida (){
+		int counter = 0;
+		for(Aresta aresta : arestas) {
+			if(aresta.getDirecao() == -1) 
+				counter++;
+		}
+		return counter;
+	}
+	
 	public boolean isAdjacente(Vertice vertice) {
 		for(Aresta aresta: arestas) {
 			if(aresta.getNoTerminal2().getNome().equals(vertice.getNome())) {
