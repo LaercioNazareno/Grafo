@@ -108,13 +108,19 @@ public class Leitor {
 	}
 	
 	private static void grafoDirigido(String[] caracteAresta, Grafo grafo) {
-				
+
 		Vertice vertice1 = new Vertice("v"+caracteAresta[0]);
 		Vertice vertice2 = new Vertice("v"+caracteAresta[1]);
-		Aresta aresta = new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), Integer.parseInt(caracteAresta[3]));
-		
-		addVertice(grafo, vertice1, aresta);
-		addVertice(grafo, vertice2,aresta);
+
+		if(caracteAresta[3] = 1){
+
+			addVertice(grafo, vertice1, new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), -1));
+			addVertice(grafo, vertice2,new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), 1));
+		}
+		else{
+			addVertice(grafo, vertice1, new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), 1));
+			addVertice(grafo, vertice2,new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), -1));
+		}
 	}
 	
 	public static void escrever() {
