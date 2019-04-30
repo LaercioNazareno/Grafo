@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import grafo.Aresta;
@@ -16,6 +18,7 @@ import grafo.Vertice;
 public class Leitor {
 	
 	private static String nome = "grafo.txt";
+	private static List<Integer> nomes = new ArrayList(); 
 			
 	public static Grafo ler() {
 		Grafo grafo = new Grafo();
@@ -49,18 +52,24 @@ public class Leitor {
 	
 	private static void conferir(int tamGrafo, int qtdVertices, Grafo grafo) {
 		if(tamGrafo != qtdVertices) {
-			
 			int qtdFalta = qtdVertices-tamGrafo;
-			Random random = new Random(); 					
 			for(int i =0;i < qtdFalta; i++) {
-				StringBuffer sb = new StringBuffer();
-				int charInt = random.nextInt(9)+64;
-				char c = (char) charInt;
-				grafo.getVertices().add(new Vertice(sb.append(c).toString()));
+				grafo.getVertices().add(new Vertice(sortingNome(qtdVertices, i)));
 			}
 		}
 		
-		
+	}
+	
+	private static String sortingNome(int qtdVertices, int i) {
+		Random random = new Random(); 		
+		int charInt = random.nextInt(qtdVertices)+65;
+		StringBuffer sb = new StringBuffer();
+		while(nomes.contains(charInt)) {
+			charInt = random.nextInt(qtdVertices)+64;
+		}
+		char c = (char) charInt;
+		nomes.add(charInt);
+		return sb.append(c).toString()+i;
 	}
 	
 	private static void construirGrafo(String caract,Grafo grafo) {
@@ -108,7 +117,12 @@ public class Leitor {
 	}
 	
 	private static void grafoDirigido(String[] caracteAresta, Grafo grafo) {
-				
+		Vertice vertice1 = new Vertice("v"+caracteAresta[0]);
+		Vertice vertice2 = new Vertice("v"+caracteAresta[1]);
+		Aresta aresta = new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), Integer.parseInt(caracteAresta[3]));
+
+		addVertice(grafo, vertice1, aresta);
+		addVertice(grafo, vertice2,aresta);
 	}
 	
 	public static void escrever() {
@@ -117,7 +131,7 @@ public class Leitor {
 			File file = new File("grafo.txt");
 			OutputStream  output = new FileOutputStream(file);
 						
-			output.write("3".getBytes());
+			output.write("4\n1;2;4\n1;3;7\n2;3;10".getBytes());
 			output.flush();
 			
 			output.close();

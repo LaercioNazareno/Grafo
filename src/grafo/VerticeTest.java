@@ -16,7 +16,7 @@ class VerticeTest {
 		Leitor.escrever();
 		Grafo grafo = Leitor.ler();
 		grafo.showGrafo();
-		assertTrue(grafo.isNulo());
+		assertFalse(grafo.isNulo());
 	}
 	
 }

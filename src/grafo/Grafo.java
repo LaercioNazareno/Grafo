@@ -116,6 +116,43 @@ public class Grafo {
 		return grafoComplementar;
 	}
 
+	public Grafo getAGMPrim(Vertice vertice) {
+		
+		Grafo agm = new Grafo();
+		int borda = 1;
+		List<Vertice> verticeAdd = new ArrayList();
+		Vertice[] verticesOrdenados = ordenarVertices(vertice);
+		int[] custo = new int[vertices.size()];
+		custo[0]=0;
+		while(borda!=0) {
+			Vertice verticeMenorBorda = verticesOrdenados.get(0);
+			
+		}
+		
+		return agm;
+	}
+	
+	public Vertice[] ordenarVertices(Vertice verticeInicial){
+		
+		Vertice[] listaVertices = new Vertice[vertices.size()];
+		listaVertices[0] = verticeInicial;
+		Vertice vertice = verticeInicial;
+		for(int i = 1; i<listaVertices.length;i++){
+			vertice = getMenorAresta(vertice);
+			listaVertices[i] = 
+		}
+		
+		return listaVertices;
+	}
+	
+	private Vertice getMenorAresta(Vertice vertice) {
+		for(Aresta aresta: vertice.arestas) {
+			
+		}
+		
+		return vertice;
+	}
+	
  	public void showGrafo() {
 		for(Vertice vertice: vertices) {
 			System.out.println("vertice "+ vertice.getNome()+"\n\tarestas:");
