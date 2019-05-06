@@ -2,47 +2,75 @@ package grafo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Grafo {
 	
 	private List<Vertice> vertices = new ArrayList<>();
 	
-	public boolean isAdjacente(Vertice vertice1, Vertice vertice2) {
-		if(vertices.contains(vertice1)&& vertices.contains(vertice2)) {
-			return vertice1.isAdjacente(vertice2);
+	private boolean isDirigido;
+	
+	public void showGrafo() {
+		String mensagem = isDirigido?"dirigido ":"nao dirigido ";
+		for(Vertice vertice: vertices) {
+			mensagem += vertice.toString();
+		}
+		System.out.println(mensagem);
+	}
+	
+	public boolean isAdjacente(Vertice vertice, Vertice terminal) {
+		for(Aresta aresta: vertice.getArestas()) {
+			if(aresta.getNoTerminal().equals(terminal)) {
+				return true;
+			}
 		}
 		return false;
 	}
 	
-	public int getGrau() {
-		int grau = 0;
-		for(Vertice vertice : vertices) {
-			grau +=vertice.getGrau();
-		}
-		return grau;
+	public boolean isIsolado(Vertice vertice) {
+		return vertice.getArestas().isEmpty();
 	}
 	
-	public int getGrau(Vertice vertice) {
-		return vertice.getGrau();
+	public boolean isIsolado() {
+		for(Vertice vertice: vertices) {
+			if(vertice.isIsolado()) {
+				return true;
+			}
+		}
+		return false;
 	}
-
-	public boolean isIsolado(Vertice vertice) {
-		return vertice.isIsolado();
+	
+	public boolean isPendente(Vertice vertice) {
+		return vertice.getArestas().size() == 1;
+	}
+	
+	public boolean isPendente() {
+		for(Vertice vertice: vertices) {
+			if(vertice.getAdjacente().size() == 1) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean isRegular() {
-		int grau = vertices.get(0).getGrau();
-		for(Vertice vertice: vertices) {
-			if(grau != vertice.getGrau()) {
-				return false;
+		boolean isRegular = true;
+		for(int i = 0;i<vertices.size()-1;i++) {
+			for(Vertice vertice: vertices) {
+				if(!vertices.get(i).equals(vertice)) {
+					if(vertice.getArestas().size() != vertices.get(i).getArestas().size()) {
+						isRegular = false;
+					}
+				}
 			}
 		}
-		return true;
+		return isRegular;
 	}
-
+	
 	public boolean isNulo() {
-		for(Vertice vertice: vertices ) {
-			if(vertice.getGrau() > 0) {
+		
+		for(Vertice vertice: vertices) {
+			if(vertice.getArestas().size() != 0) {
 				return false;
 			}
 		}
@@ -50,120 +78,216 @@ public class Grafo {
 	}
 	
 	public boolean isCompleto() {
+		boolean isCompleto = true;
 		for(Vertice vertice: vertices) {
-			if(vertice.getGrau() == (vertices.size()-1)) {
-				for(Aresta aresta: vertice.arestas) {
-					for(Vertice vertice2: vertices) {
-						if(!(aresta.getNoTerminal1().equals(vertice) && aresta.getNoTerminal2().equals(vertice2) || 
-						  (aresta.getNoTerminal2().equals(vertice)&& aresta.getNoTerminal1().equals(vertice2)))) {
-							return false;
-						}
+			for(Vertice terminal: vertices) {
+				if(!terminal.equals(vertice)) {
+					if(!isAdjacente(vertice,terminal)) {
+						isCompleto = false;
 					}
 				}
-			}else {
-				return false;
 			}
 		}
-		return false;
+		return isCompleto;
 	}
-	
+
+
 	public boolean isConexo() {
-		for(Vertice vertice: vertices ) {
-			if(vertice.getGrau() == 0) {
-				return false;
+		boolean isConexo = true;
+		for(Vertice vertice: vertices) {
+			if(vertice.getArestas().size() == 0) {
+				isConexo = false;			
 			}
 		}
-		return true;
+		return isConexo;
 	}
 	
 	public boolean isEuleriano() {
-		for(Vertice vertice: vertices) {
-			if(vertice.getGrau() != 2) {
+		for(Vertice vertice : vertices) {
+			if(vertice.getGrau()%2!=0) {
 				return false;
 			}
 		}
 		return true;
 	}
+
+	public Grafo aGMKruskal() {
+		
+		Grafo grafo = new Grafo();
+		List<Vertice> verticesCopy = copyVerticesKuskal(vertices);
+		
+		Aresta[] arestasCopy = copyArestas(vertices);
+		ordenarArestas(arestasCopy);      
+		
+		for(int i = 0;i<arestasCopy.length;i++) {
+			
+			Vertice terminal = arestasCopy[i].getNoTerminal();
+			Vertice vertice = arestasCopy[i].getNoTerminal0();
+			
+			if(!terminal.getChefe().equals(vertice.getChefe())) {
+				Vertice verticeCopy = getVerticeByName(vertice.getNome(),verticesCopy);
+				Vertice terminalCopy = getVerticeByName(terminal.getNome(),verticesCopy);
+				terminalCopy.getArestas().add(arestasCopy[i]);
+				verticeCopy.getArestas().add(arestasCopy[i]);
+				terminal.setChefe(vertice.getNome());
+			}
+		}
+		grafo.showGrafoAGMKruskal();
+		grafo.setVertices(verticesCopy);
+		return grafo;
+				
+	}
+	
+	public void ordenarArestas(Aresta[] arestas) {
+		for(int i =0;i<arestas.length-1;i++) {
+			for(int j =0;j<arestas.length-1;j++) {
+				if(arestas[i].getPeso()<arestas[j].getPeso()) {
+					Aresta arestaAux = arestas[i];
+					arestas[i] = arestas[j];
+					arestas[j] = arestaAux;
+				}
+			}
+		}
+	}
+	
+	public Aresta[] copyArestas(List<Vertice> verticesList){
+		
+		List<Aresta>  arestasList = new ArrayList<Aresta>();
+		for(Vertice vertice: vertices) {
+			for(Aresta aresta: vertice.getArestas()) {
+				Aresta arestaCopy = new Aresta(aresta.getNoTerminal(),getVerticeByName(vertice.getNome(), verticesList),aresta.getPeso());
+				if(verificarAresta(arestaCopy, arestasList)) {
+					arestasList.add(arestaCopy);
+				}
+			}
+		}
+
+		Aresta[] arestas = new Aresta[arestasList.size()];
+		int i = 0;
+		for(Aresta aresta: arestasList) {
+			arestas[i] = aresta;
+			i++;
+		}
+		return arestas;
+	}
+	
+	private boolean verificarAresta(Aresta arestaV, List<Aresta> arestaList) {
+		for(Aresta aresta: arestaList) {
+			if(aresta.getNoTerminal().equals(arestaV.getNoTerminal())||aresta.getNoTerminal().equals(arestaV.getNoTerminal0())) {
+				if(aresta.getNoTerminal0().equals(arestaV.getNoTerminal0())||aresta.getNoTerminal().equals(arestaV.getNoTerminal0())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public void showGrafoAGMKruskal() {
+		String mensagem = isDirigido?"dirigido ":"nao dirigido ";
+		for(Vertice vertice: vertices) {
+			mensagem +=  vertice.toString();
+		}
+		System.out.println(mensagem);
+	}
+	
+	private List<Vertice> copyVerticesKuskal(List<Vertice> verticeList){
+		Grafo grafoCopy = new Grafo();
+		List<Vertice> verticesCopy = new ArrayList<Vertice>();
+		
+		for(Vertice vertice: verticeList) {
+			Vertice verticeCopy = new Vertice(vertice.getNome());
+			verticeCopy.setChefe(verticeCopy.getNome());
+			verticesCopy.add(verticeCopy);
+			
+		}
+		
+		copyAdj(verticeList,verticesCopy);
+
+		grafoCopy.setVertices(verticesCopy);
+		return verticesCopy;
+	}
+
 	
 	public boolean isUnicursal() {
 		int qtdImpar = 0;
-		
 		for(Vertice vertice: vertices) {
 			if(vertice.getGrau()%2!=0) {
 				qtdImpar++;
 			}
 		}
-		
 		return qtdImpar == 2;
 	}
+
 	
 	public Grafo getComplementar() {
 		
-		Grafo grafoComplementar = new Grafo();
+		Grafo grafoComplemetar = new Grafo();
+		
+		List<Vertice> verticesComplementares = copyVertices(vertices);
+				
+		grafoComplemetar.setVertices(verticesComplementares);
+		
 		for(Vertice vertice: vertices) {
-			for(Vertice verticeAdj: vertices) {
-				if((vertice.isAdjacente(verticeAdj))) {
-					if(!(grafoComplementar.vertices.contains(vertice))) {
-						grafoComplementar.vertices.add(vertice);
-					}
-					if(!(grafoComplementar.vertices.contains(verticeAdj))) {
-						grafoComplementar.vertices.add(verticeAdj);
+			
+			for(Vertice verticeAjd: vertices) {
+				
+				if(!vertice.equals(verticeAjd)) {
+					
+					Vertice verticeComplementar = grafoComplemetar.getVerticeByName(vertice.getNome());
+					Vertice verticeAdjComplementar = grafoComplemetar.getVerticeByName(verticeAjd.getNome());
+					
+					if(!verticeComplementar.getAdjacente().contains(verticeAdjComplementar)) {
+						
+						verticeComplementar.getAdjacente().add(verticeAdjComplementar);
+						verticeAdjComplementar.getArestas().add(new Aresta(verticeComplementar));
+					
+						verticeComplementar.getArestas().add(new Aresta(verticeAdjComplementar));
+						verticeAdjComplementar.getAdjacente().add(verticeComplementar);
+						
 					}
 				}
 			}
 		}
 		
-		return grafoComplementar;
+		return grafoComplemetar;
+	
+	}
+	
+	public boolean isDirigido() {
+		return isDirigido;
 	}
 
-	public Grafo getAGMPrim(Vertice vertice) {
+	private List<Vertice> copyVertices(List<Vertice> verticeList){
+		Grafo grafoCopy = new Grafo();
+		List<Vertice> verticesCopy = new ArrayList<Vertice>();
 		
-		Grafo agm = new Grafo();
-		int borda = 1;
-		List<Vertice> verticeAdd = new ArrayList();
-		Vertice[] verticesOrdenados = ordenarVertices(vertice);
-		int[] custo = new int[vertices.size()];
-		custo[0]=0;
-		while(borda!=0) {
-			Vertice verticeMenorBorda = verticesOrdenados.get(0);
-			
+		for(Vertice vertice: verticeList) {
+			Vertice verticeCopy = new Vertice(vertice.getNome());
+			verticesCopy.add(verticeCopy);
 		}
 		
-		return agm;
+		copyAdj(verticeList,verticesCopy);
+
+		grafoCopy.setVertices(verticesCopy);
+		return verticesCopy;
 	}
 	
-	public Vertice[] ordenarVertices(Vertice verticeInicial){
+	private void copyAdj(List<Vertice> verticeList,  List<Vertice> copyList){
 		
-		Vertice[] listaVertices = new Vertice[vertices.size()];
-		listaVertices[0] = verticeInicial;
-		Vertice vertice = verticeInicial;
-		for(int i = 1; i<listaVertices.length;i++){
-			vertice = getMenorAresta(vertice);
-			listaVertices[i] = 
-		}
-		
-		return listaVertices;
-	}
-	
-	private Vertice getMenorAresta(Vertice vertice) {
-		for(Aresta aresta: vertice.arestas) {
-			
+		for(Vertice vertice: verticeList) {
+			for(Vertice verticeCopy: copyList) {
+				if(vertice.getNome().equals(verticeCopy.getNome())) {
+					for(Vertice verticeAdj: vertice.getAdjacente()) {
+						verticeCopy.getAdjacente().add(getVerticeByName(verticeAdj.getNome(), copyList));
+					}
+				}
+			}
 		}
 		
-		return vertice;
 	}
 	
- 	public void showGrafo() {
-		for(Vertice vertice: vertices) {
-			System.out.println("vertice "+ vertice.getNome()+"\n\tarestas:");
-			vertice.showArestas();
-		}
-	}
-	
-	public void listVertice() {
-		for(Vertice vertice: vertices) {
-			System.out.println(vertice.getNome());
-		}
+	public void setDirigido(boolean isDirigido) {
+		this.isDirigido = isDirigido;
 	}
 
 	public List<Vertice> getVertices() {
@@ -173,35 +297,37 @@ public class Grafo {
 	public void setVertices(List<Vertice> vertices) {
 		this.vertices = vertices;
 	}
-		
+
+	public int getGrau(Vertice vertice) {
+		return vertice.getGrau();
+	}
+	
+	public int getGrau() {
+		int grau = 0;
+		for(Vertice vertice: vertices) {
+			grau += vertice.getGrau();
+		}
+		return grau;
+	}
+	
+	private Vertice getVerticeByName(String nome) {
+		for(Vertice vertice: vertices){
+			if(vertice.getNome().equals(nome)) {
+				return vertice;
+			}
+		}
+		return null;
+	}
+	
+	private Vertice getVerticeByName(String nome, List<Vertice> verticeList) {
+		for(Vertice vertice: verticeList){
+			if(vertice.getNome().equals(nome)) {
+				return vertice;
+			}
+		}
+		return null;
+	}
+
+	
+	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

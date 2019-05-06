@@ -2,48 +2,55 @@ package grafo;
 
 public class Aresta {
 	
-	private Vertice noTerminal1;
-	private Vertice noTerminal2;
+	private Vertice noTerminal;
+	private Vertice noTerminal0;
 	private int peso;
+	private String nome;
 	private int direcao;
 	
-	public Aresta(Vertice noTerminal1, Vertice noTerminal2, int peso) {
-		this.noTerminal1 = noTerminal1;
-		this.noTerminal2 = noTerminal2;
-		this.peso = peso;
-	}
-	
-	public Aresta(Vertice noTerminal1, Vertice noTerminal2, int peso, int direcao) {
-		this.noTerminal1 = noTerminal1;
-		this.noTerminal2 = noTerminal2;
+	public Aresta(Vertice noTerminal, int peso, int direcao) {
+		this.noTerminal = noTerminal;
 		this.peso = peso;
 		this.direcao = direcao;
 	}
+
+	public Aresta(Vertice noTerminal, int peso) {
+		this.noTerminal = noTerminal;
+		this.peso = peso;
+	}
 	
-	
-
-	public int getDirecao() {
-		return direcao;
+	public Aresta(Vertice noTerminal0,Vertice noTerminal, int peso) {
+		this.noTerminal = noTerminal;
+		this.noTerminal0 = noTerminal0;
+		this.peso = peso;
+	}
+		
+	public String getNome() {
+		return nome;
 	}
 
-	public void setDirecao(int direcao) {
-		this.direcao = direcao;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public Vertice getNoTerminal1() {
-		return noTerminal1;
+	public Aresta(Vertice noTerminal) {
+		this.noTerminal = noTerminal;
+	}
+		
+	public Vertice getNoTerminal0() {
+		return noTerminal0;
 	}
 
-	public void setNoTerminal1(Vertice noTerminal1) {
-		this.noTerminal1 = noTerminal1;
+	public void setNoTerminal0(Vertice noTerminal0) {
+		this.noTerminal0 = noTerminal0;
 	}
 
-	public Vertice getNoTerminal2() {
-		return noTerminal2;
+	public Vertice getNoTerminal() {
+		return noTerminal;
 	}
 
-	public void setNoTerminal2(Vertice noTerminal2) {
-		this.noTerminal2 = noTerminal2;
+	public void setNoTerminal(Vertice noTerminal) {
+		this.noTerminal = noTerminal;
 	}
 
 	public int getPeso() {
@@ -53,6 +60,21 @@ public class Aresta {
 	public void setPeso(int peso) {
 		this.peso = peso;
 	}
+	
+	public int getDirecao() {
+		return direcao;
+	}
+
+	public void setDirecao(int direcao) {
+		this.direcao = direcao;
+	}
+
+	@Override
+	public String toString() {
+		
+		return "\t\tpeso: "+getPeso()+ " \tnos Terminais: "+getNoTerminal0().getNome()+" "+getNoTerminal().getNome();
+	}
+	
 	
 	
 	

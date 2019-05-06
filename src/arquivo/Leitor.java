@@ -1,12 +1,9 @@
 package arquivo;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,31 +13,32 @@ import grafo.Grafo;
 import grafo.Vertice;
 
 public class Leitor {
+
+	private static List<String> nomes = new ArrayList<String>(); 
+	private static FileReader file;
+	private static BufferedReader leitor;
 	
-	private static String nome = "grafo.txt";
-	private static List<Integer> nomes = new ArrayList(); 
-			
-	public static Grafo ler() {
+	public static Grafo ler(String nome) {
+		
 		Grafo grafo = new Grafo();
 		try {
+			abrirArquivo(nome);    
 			
-			FileReader file = new FileReader(nome);
-			BufferedReader leitor = new BufferedReader(file);	
-		    
 			String linha = leitor.readLine();
-		    
-		    int qtdVertices = Integer.parseInt(linha);
-			while(linha != null) {
+			int qtdVertices = Integer.parseInt(linha);
+			
+			while(linha!=null) {
+				
 				linha = leitor.readLine();
-				if(linha != null) {
-					construirGrafo(linha, grafo);
+				
+				if(linha!= null) {
+					construirGrafo(linha.split(";"), grafo);
 				}
 			}
 			
-			conferir(grafo.getVertices().size(), qtdVertices, grafo);
-			
-			leitor.close();
-		    file.close();
+			conferir(qtdVertices, grafo);
+						
+			fecharArquivo();
 		    
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -50,97 +48,124 @@ public class Leitor {
 		return grafo;
 	}
 	
-	private static void conferir(int tamGrafo, int qtdVertices, Grafo grafo) {
-		if(tamGrafo != qtdVertices) {
-			int qtdFalta = qtdVertices-tamGrafo;
-			for(int i =0;i < qtdFalta; i++) {
-				grafo.getVertices().add(new Vertice(sortingNome(qtdVertices, i)));
-			}
-		}
+	private static boolean conferir(int qtdVertices, Grafo grafo) {
+		int tamGrafo = grafo.getVertices().size();
 		
+		int qtdFalta = qtdVertices-tamGrafo;
+		for(int i = 0;i<qtdFalta;i++) {
+			grafo.getVertices().add(new Vertice(createNome(qtdFalta)));
+		}
+		return true;
 	}
 	
-	private static String sortingNome(int qtdVertices, int i) {
-		Random random = new Random(); 		
-		int charInt = random.nextInt(qtdVertices)+65;
+	private static String createNome(int limite) {
+		String nome = sortingNome(limite);
+		while(nomes.contains(nome)){
+			nome = sortingNome(limite);
+		}	
+		nomes.add(nome);
+		return nome;
+	}
+	
+	private static String sortingNome(int limite) {
+		Random random = new Random(); 					
+		
 		StringBuffer sb = new StringBuffer();
-		while(nomes.contains(charInt)) {
-			charInt = random.nextInt(qtdVertices)+64;
-		}
+		int charInt = random.nextInt(limite)+65;
 		char c = (char) charInt;
-		nomes.add(charInt);
-		return sb.append(c).toString()+i;
+		return sb.append(c).toString();
 	}
 	
-	private static void construirGrafo(String caract,Grafo grafo) {
-		
-		String[] aresta = caract.split(";");
-		if(aresta.length == 4 ) {
-			grafoDirigido(aresta, grafo);
+	
+	
+	
+	
+	
+	private static void construirGrafo(String[] caract, Grafo grafo) {
+		if(grafo.isDirigido()) {
+			//TODO construir dirigido
 		}else {
-			grafoNaoDirigido(aresta, grafo);
+			construirVerticeNaoDirigido(caract, grafo);
+			
 		}
 	}
 	
-	private static void addVertice(Grafo grafo, Vertice vertice1, Aresta aresta) {
+	private static void construirVerticeNaoDirigido(String[] caract, Grafo grafo) {
 		
-		boolean canAdd = true;
-		int index = 0;
-		vertice1.arestas.add(aresta);
+		Vertice vertice,terminal;
 		
-		for(Vertice vertice: grafo.getVertices()) {
-			if(vertice.getNome().equals(vertice1.getNome())){
-				canAdd = false;
+		vertice = getVertice(caract[0], grafo);		
+		
+		terminal = getVertice(caract[1], grafo);
+		
+		if(!grafo.getVertices().contains(terminal)) {
+			grafo.getVertices().add(terminal);
+		}
+		terminal.getArestas().add(construirAresta(terminal,vertice, Integer.parseInt(caract[2])));
+		terminal.getAdjacente().add(vertice);
+		
+		if(!grafo.getVertices().contains(vertice)) {
+			grafo.getVertices().add(vertice);
+		}
+		
+		vertice.getArestas().add(construirAresta(vertice,terminal, Integer.parseInt(caract[2])));
+		vertice.getAdjacente().add(terminal);
+	}
+	
+	private static Aresta construirAresta(Vertice vertice,Vertice terminal, int peso) {
+		return new Aresta(vertice,terminal,peso);
+	}
+	
+	private static Vertice getVerticeByName(String string, Grafo grafo) {
+		for(Vertice vertice: grafo.getVertices()){
+			if(vertice.getNome().equals(string)) {
+				return vertice;
 			}
-			if(canAdd)
-				index++;
 		}
-		
-		if(canAdd) {
-			grafo.getVertices().add(vertice1);
+		return null;
+	}
+	
+	private static Vertice getVertice(String nome, Grafo grafo) {
+		Vertice vertice;
+		if(isNewVertice(nome, grafo)) {
+			vertice = new Vertice(nome);
 		}else {
-			grafo.getVertices().get(index).arestas.add(aresta);
+			vertice = getVerticeByName(nome, grafo);
+		}
+		return vertice;
+	}
+	
+	private static boolean isNewVertice(String nome, Grafo grafo) {
+		if(grafo.getVertices().size() > 0) {
+			for(Vertice vertice: grafo.getVertices()){
+				if(vertice.getNome().equals(nome)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+	private static void setOrientacao(String[] caract, Grafo grafo) {
+		if(caract.length == 3) {
+			grafo.setDirigido(true);
+		}else {
+			grafo.setDirigido(false);
 		}
 		
-	}
-	
-	private static void grafoNaoDirigido(String[] caracteAresta, Grafo grafo) {
 		
-		Vertice vertice1 = new Vertice("v"+caracteAresta[0]);
-		Vertice vertice2 = new Vertice("v"+caracteAresta[1]);
-		Aresta aresta = new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]));
+	}
+	
+	private static void abrirArquivo(String nome) throws IOException{
+		file = new FileReader(nome);
+		leitor = new BufferedReader(file);
 		
-		addVertice(grafo, vertice1, aresta);
-		addVertice(grafo, vertice2,aresta);
-
-			
 	}
 	
-	private static void grafoDirigido(String[] caracteAresta, Grafo grafo) {
-		Vertice vertice1 = new Vertice("v"+caracteAresta[0]);
-		Vertice vertice2 = new Vertice("v"+caracteAresta[1]);
-		Aresta aresta = new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), Integer.parseInt(caracteAresta[3]));
-
-		addVertice(grafo, vertice1, aresta);
-		addVertice(grafo, vertice2,aresta);
+	private static void fecharArquivo()  throws IOException{
+		leitor.close();
+	    file.close();
 	}
 	
-	public static void escrever() {
-
-		try {
-			File file = new File("grafo.txt");
-			OutputStream  output = new FileOutputStream(file);
-						
-			output.write("4\n1;2;4\n1;3;7\n2;3;10".getBytes());
-			output.flush();
-			
-			output.close();
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
 }

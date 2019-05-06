@@ -11,14 +11,6 @@ import org.junit.jupiter.api.Test;
 import arquivo.Leitor;
 class VerticeTest {
 	
-	@Test
-	public void getGrau() {
-		Leitor.escrever();
-		Grafo grafo = Leitor.ler();
-		grafo.showGrafo();
-		assertFalse(grafo.isNulo());
-	}
-	
 }
 
 
