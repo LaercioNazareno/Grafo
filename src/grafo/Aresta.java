@@ -71,11 +71,8 @@ public class Aresta {
 
 	@Override
 	public String toString() {
-		
+		if(getNoTerminal0()==null) 
+			return "\t\tpeso: "+getPeso()+ " \tnos Terminais: "+getNoTerminal().getNome();
 		return "\t\tpeso: "+getPeso()+ " \tnos Terminais: "+getNoTerminal0().getNome()+" "+getNoTerminal().getNome();
 	}
-	
-	
-	
-	
 }

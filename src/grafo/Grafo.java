@@ -2,18 +2,17 @@ package grafo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Grafo {
 	
 	private List<Vertice> vertices = new ArrayList<>();
-	
+	private List<Aresta> arestasPrim = new ArrayList<>();
 	private boolean isDirigido;
 	
 	public void showGrafo() {
 		String mensagem = isDirigido?"dirigido ":"nao dirigido ";
 		for(Vertice vertice: vertices) {
-			mensagem += vertice.toString();
+			mensagem +=  vertice.toString();
 		}
 		System.out.println(mensagem);
 	}
@@ -91,7 +90,6 @@ public class Grafo {
 		return isCompleto;
 	}
 
-
 	public boolean isConexo() {
 		boolean isConexo = true;
 		for(Vertice vertice: vertices) {
@@ -111,10 +109,10 @@ public class Grafo {
 		return true;
 	}
 
-	public Grafo aGMKruskal() {
+	public Grafo aGMPrim() {
 		
 		Grafo grafo = new Grafo();
-		List<Vertice> verticesCopy = copyVerticesKuskal(vertices);
+		List<Vertice> verticesCopy = new ArrayList<>();
 		
 		Aresta[] arestasCopy = copyArestas(vertices);
 		ordenarArestas(arestasCopy);      
@@ -123,21 +121,18 @@ public class Grafo {
 			
 			Vertice terminal = arestasCopy[i].getNoTerminal();
 			Vertice vertice = arestasCopy[i].getNoTerminal0();
-			
-			if(!terminal.getChefe().equals(vertice.getChefe())) {
-				Vertice verticeCopy = getVerticeByName(vertice.getNome(),verticesCopy);
-				Vertice terminalCopy = getVerticeByName(terminal.getNome(),verticesCopy);
-				terminalCopy.getArestas().add(arestasCopy[i]);
-				verticeCopy.getArestas().add(arestasCopy[i]);
-				terminal.setChefe(vertice.getNome());
+		
+			if(!grafo.getVertices().contains(vertice)||!grafo.getVertices().contains(terminal)) {
+				grafo.getVertices().add(vertice);
+				grafo.getVertices().add(terminal);
+				grafo.arestasPrim.add(arestasCopy[i]);
 			}
 		}
-		grafo.showGrafoAGMKruskal();
 		grafo.setVertices(verticesCopy);
 		return grafo;
 				
 	}
-	
+		
 	public void ordenarArestas(Aresta[] arestas) {
 		for(int i =0;i<arestas.length-1;i++) {
 			for(int j =0;j<arestas.length-1;j++) {
@@ -184,30 +179,12 @@ public class Grafo {
 	
 	public void showGrafoAGMKruskal() {
 		String mensagem = isDirigido?"dirigido ":"nao dirigido ";
-		for(Vertice vertice: vertices) {
-			mensagem +=  vertice.toString();
+		for(Aresta aresta: arestasPrim) {
+			mensagem += "\n"+aresta.toString();
 		}
 		System.out.println(mensagem);
 	}
-	
-	private List<Vertice> copyVerticesKuskal(List<Vertice> verticeList){
-		Grafo grafoCopy = new Grafo();
-		List<Vertice> verticesCopy = new ArrayList<Vertice>();
 		
-		for(Vertice vertice: verticeList) {
-			Vertice verticeCopy = new Vertice(vertice.getNome());
-			verticeCopy.setChefe(verticeCopy.getNome());
-			verticesCopy.add(verticeCopy);
-			
-		}
-		
-		copyAdj(verticeList,verticesCopy);
-
-		grafoCopy.setVertices(verticesCopy);
-		return verticesCopy;
-	}
-
-	
 	public boolean isUnicursal() {
 		int qtdImpar = 0;
 		for(Vertice vertice: vertices) {
@@ -218,7 +195,6 @@ public class Grafo {
 		return qtdImpar == 2;
 	}
 
-	
 	public Grafo getComplementar() {
 		
 		Grafo grafoComplemetar = new Grafo();
@@ -327,7 +303,5 @@ public class Grafo {
 		}
 		return null;
 	}
-
-	
 	
 }

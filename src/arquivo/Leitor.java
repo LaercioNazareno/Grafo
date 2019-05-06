@@ -76,11 +76,6 @@ public class Leitor {
 		return sb.append(c).toString();
 	}
 	
-	
-	
-	
-	
-	
 	private static void construirGrafo(String[] caract, Grafo grafo) {
 		if(grafo.isDirigido()) {
 			//TODO construir dirigido
@@ -144,17 +139,6 @@ public class Leitor {
 			}
 		}
 		return true;
-	}
-
-
-	private static void setOrientacao(String[] caract, Grafo grafo) {
-		if(caract.length == 3) {
-			grafo.setDirigido(true);
-		}else {
-			grafo.setDirigido(false);
-		}
-		
-		
 	}
 	
 	private static void abrirArquivo(String nome) throws IOException{
