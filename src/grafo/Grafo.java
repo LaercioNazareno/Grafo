@@ -273,7 +273,25 @@ public class Grafo {
 	public void setVertices(List<Vertice> vertices) {
 		this.vertices = vertices;
 	}
+	public int getGrauEntrada(Vertice vertice) {
+		return vertice.getGrauEntrada();
+	}
 
+	public int getGrauSaida(Vertice vertice) {
+		return vertice.getGrauSaida();
+	}
+
+	public boolean hasCiclo(){
+			for(Vertice vertice: vertices) {
+					for(Aresta aresta: vertice.getArestas()) {
+						if(aresta.getNoTerminal().getNome() == aresta.getNoTerminal0().getNome()){
+							return true;
+						}
+					}
+			}
+			return false;			
+	}
+		
 	public int getGrau(Vertice vertice) {
 		return vertice.getGrau();
 	}

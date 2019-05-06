@@ -13,6 +13,13 @@ public class Aresta {
 		this.peso = peso;
 		this.direcao = direcao;
 	}
+	
+	public Aresta(Vertice vertice,Vertice noTerminal, int peso, int direcao) {
+		this.noTerminal = noTerminal;
+		this.peso = peso;
+		this.noTerminal0 = vertice;
+		this.direcao = direcao;
+	}
 
 	public Aresta(Vertice noTerminal, int peso) {
 		this.noTerminal = noTerminal;

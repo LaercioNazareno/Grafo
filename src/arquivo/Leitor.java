@@ -78,7 +78,7 @@ public class Leitor {
 	
 	private static void construirGrafo(String[] caract, Grafo grafo) {
 		if(grafo.isDirigido()) {
-			//TODO construir dirigido
+			grafoDirigido(caract, grafo);
 		}else {
 			construirVerticeNaoDirigido(caract, grafo);
 			
@@ -118,6 +118,43 @@ public class Leitor {
 			}
 		}
 		return null;
+	}
+	private static void grafoDirigido(String[] caracteAresta, Grafo grafo) {
+
+		Vertice vertice1 = new Vertice("v"+caracteAresta[0]);
+		Vertice vertice2 = new Vertice("v"+caracteAresta[1]);
+
+		if(caracteAresta[3] == "1"){
+
+			addVertice(grafo, vertice1, new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), -1));
+			addVertice(grafo, vertice2,new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), 1));
+		}
+		else{
+			addVertice(grafo, vertice1, new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), 1));
+			addVertice(grafo, vertice2,new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), -1));
+		}
+	}
+	
+	private static void addVertice(Grafo grafo, Vertice vertice1, Aresta aresta) {
+		
+		boolean canAdd = true;
+		int index = 0;
+		vertice1.getArestas().add(aresta);
+		
+		for(Vertice vertice: grafo.getVertices()) {
+			if(vertice.getNome().equals(vertice1.getNome())){
+				canAdd = false;
+			}
+			if(canAdd)
+				index++;
+		}
+		
+		if(canAdd) {
+			grafo.getVertices().add(vertice1);
+		}else {
+			grafo.getVertices().get(index).getArestas().add(aresta);
+		}
+		
 	}
 	
 	private static Vertice getVertice(String nome, Grafo grafo) {

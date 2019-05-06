@@ -47,6 +47,34 @@ public class Vertice {
 	public List<Aresta> getArestas() {
 		return arestas;
 	}
+
+	public int getGrauEntrada (){
+			int counter = 0;
+			for(Aresta aresta : arestas) {
+				if(aresta.getDirecao() == 1) 
+					counter++;
+			}
+			return counter;
+		}
+	
+
+	public int getGrauSaida (){
+		int counter = 0;
+		for(Aresta aresta : arestas) {
+			if(aresta.getDirecao() == -1) 
+				counter++;
+		}
+		return counter;
+	}
+	
+	public boolean isAdjacente(Vertice vertice) {
+		for(Aresta aresta: arestas) {
+			if(aresta.getNoTerminal0().getNome().equals(vertice.getNome())) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public boolean isIsolado() {
 		return arestas.size() == 0;
@@ -83,7 +111,5 @@ public class Vertice {
 		
 		return mensagem;
 	}
-	
-	
-	
+		
 }
