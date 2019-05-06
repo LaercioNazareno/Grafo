@@ -77,7 +77,7 @@ public class Leitor {
 	}
 	
 	private static void construirGrafo(String[] caract, Grafo grafo) {
-		if(grafo.isDirigido()) {
+		if(caract.length==4) {
 			grafoDirigido(caract, grafo);
 		}else {
 			construirVerticeNaoDirigido(caract, grafo);
@@ -88,7 +88,7 @@ public class Leitor {
 	private static void construirVerticeNaoDirigido(String[] caract, Grafo grafo) {
 		
 		Vertice vertice,terminal;
-		
+				
 		vertice = getVertice(caract[0], grafo);		
 		
 		terminal = getVertice(caract[1], grafo);
@@ -124,6 +124,7 @@ public class Leitor {
 		Vertice vertice1 = new Vertice("v"+caracteAresta[0]);
 		Vertice vertice2 = new Vertice("v"+caracteAresta[1]);
 
+		grafo.setDirigido(true);
 		if(caracteAresta[3] == "1"){
 
 			addVertice(grafo, vertice1, new Aresta(vertice1, vertice2, Integer.parseInt(caracteAresta[2]), -1));

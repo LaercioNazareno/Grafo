@@ -282,14 +282,14 @@ public class Grafo {
 	}
 
 	public boolean hasCiclo(){
-			for(Vertice vertice: vertices) {
-					for(Aresta aresta: vertice.getArestas()) {
-						if(aresta.getNoTerminal().getNome() == aresta.getNoTerminal0().getNome()){
-							return true;
-						}
-					}
+		for(Vertice vertice: vertices) {
+			for(Aresta aresta: vertice.getArestas()) {
+				if(aresta.getNoTerminal().getNome() == aresta.getNoTerminal0().getNome()){
+					return true;
+				}
 			}
-			return false;			
+		}
+		return false;			
 	}
 		
 	public int getGrau(Vertice vertice) {

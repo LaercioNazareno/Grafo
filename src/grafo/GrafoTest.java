@@ -140,37 +140,51 @@ class GrafoTest {
 //		}
 //		grafo.aGMKruskal().showGrafoAGMKruskal();
 //    }
+//	
+//	@Test
+//    public void grafoUnicursal(){
+//		Grafo grafo = Leitor.ler("unicursal.txt");
+//		
+//		grafo.showGrafo();
+//		
+//		assertFalse("Completo",grafo.isCompleto());
+//		assertFalse("nulo",grafo.isNulo());
+//		assertFalse("Pendente",grafo.isPendente());
+//		assertFalse("regular",grafo.isRegular());
+//		assertTrue("unicursal",grafo.isUnicursal());
+//		System.out.println("\n");
+//		for(int i = 0; i< 100;i++) {
+//			System.out.print("/////");
+//		}
+//		System.out.println("\n\nComplementar\n");
+//		for(int i = 0; i< 100;i++) {
+//			System.out.print("/////");
+//		}
+//		grafo.getComplementar().showGrafo();
+//		
+//
+//		System.out.print("\n");
+//		for(int i = 0; i< 100;i++) {
+//			System.out.print("/////");
+//		}
+//		System.out.print("\nÁrvore Geradora minima\n");
+//		for(int i = 0; i< 100;i++) {
+//			System.out.print("/////");
+//		}
+//		grafo.aGMPrim().showGrafoAGMKruskal();
+//    }
+//	
+	@Test
+    public void grafoCiclico(){
+		Grafo grafo = Leitor.ler("ciclico.txt");
+		assertTrue(grafo.hasCiclo());
+		grafo.showGrafo();
+    }
 	
 	@Test
-    public void grafoUnicursal(){
-		Grafo grafo = Leitor.ler("unicursal.txt");
-		
+    public void grafoAciclico(){
+		Grafo grafo = Leitor.ler("aciclico.txt");
+		assertFalse(grafo.hasCiclo());
 		grafo.showGrafo();
-		
-		assertFalse("Completo",grafo.isCompleto());
-		assertFalse("nulo",grafo.isNulo());
-		assertFalse("Pendente",grafo.isPendente());
-		assertFalse("regular",grafo.isRegular());
-		assertTrue("unicursal",grafo.isUnicursal());
-		System.out.println("\n");
-		for(int i = 0; i< 100;i++) {
-			System.out.print("/////");
-		}
-		System.out.println("\n\nComplementar\n");
-		for(int i = 0; i< 100;i++) {
-			System.out.print("/////");
-		}
-		grafo.getComplementar().showGrafo();
-		
-
-		System.out.print("\n");
-		for(int i = 0; i< 100;i++) {
-			System.out.print("/////");
-		}
-		System.out.print("\nÁrvore Geradora minima\n");
-		for(int i = 0; i< 100;i++) {
-			System.out.print("/////");
-		}
-		grafo.aGMPrim().showGrafoAGMKruskal();
     }
 }
